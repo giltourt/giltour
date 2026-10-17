@@ -3,449 +3,278 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Admin Giltour</title>
-
+<title>Giltour | Paket Wisata Indonesia</title>
 <style>
-* { box-sizing: border-box; }
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: #f7f3e9;
-  color: #19352c;
-  line-height: 1.5;
-}
-header {
-  background: #174c3c;
-  color: white;
-  padding: 18px 5%;
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-header a { color: white; }
-.wrap { max-width: 900px; margin: 25px auto; padding: 0 14px; }
-.panel {
-  background: white;
-  padding: 22px;
-  border-radius: 14px;
-  margin-bottom: 18px;
-  box-shadow: 0 5px 20px #0001;
-}
-h1, h2 { color: #174c3c; }
-label { display: block; font-weight: bold; margin-top: 13px; }
-input, select, textarea {
-  display: block;
-  width: 100%;
-  padding: 12px;
-  border: 1px solid #cbd5ce;
-  border-radius: 8px;
-  font: inherit;
-  margin-top: 5px;
-}
-textarea { min-height: 90px; resize: vertical; }
-.btn {
-  padding: 11px 17px;
-  border: 0;
-  border-radius: 22px;
-  background: #174c3c;
-  color: white;
-  font-weight: bold;
-  cursor: pointer;
-  margin-top: 15px;
-}
-.danger { background: #a83c35; }
-.secondary { background: #64756a; }
-.status {
-  background: #edf2ed;
-  border-radius: 8px;
-  padding: 12px;
-  margin-bottom: 15px;
-  overflow-wrap: anywhere;
-}
-.hidden { display: none; }
-.item {
-  border: 1px solid #dce3dc;
-  padding: 14px;
-  border-radius: 10px;
-  margin: 12px 0;
-}
-.small { color: #617067; font-size: .9rem; }
-.hint { color: #617067; font-size: .9rem; }
-button:disabled { opacity: .6; cursor: wait; }
+*{box-sizing:border-box}
+:root{--green:#174c3c;--green2:#276b52;--cream:#f7f3e9;--gold:#d9b66f}
+body{margin:0;font-family:Arial,sans-serif;background:var(--cream);color:#19352c;line-height:1.6}
+header{background:var(--green);color:white;padding:18px 5%;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.brand{font-size:1.5rem;font-weight:bold}
+nav{display:flex;gap:16px;flex-wrap:wrap}
+nav a{color:white;text-decoration:none;font-weight:bold}
+.wrap{max-width:1100px;margin:auto}
+.hero{padding:75px 6%;background:linear-gradient(120deg,#10392c,#276b52);color:white}
+.hero h1{font-size:clamp(2.2rem,6vw,4rem);line-height:1.12;margin:10px 0}
+.eyebrow{color:var(--gold);font-weight:bold;letter-spacing:2px}
+.btn{display:inline-block;background:var(--gold);color:#19352c;padding:11px 17px;border:0;border-radius:25px;text-decoration:none;font-weight:bold;cursor:pointer}
+section{padding:45px 5%}
+.section-title{text-align:center;margin-bottom:25px}
+.section-title h2{color:var(--green)}
+.search{display:block;width:100%;max-width:600px;margin:0 auto 25px;padding:14px;border:1px solid #ccc;border-radius:10px;font-size:16px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px}
+.card{background:white;border-radius:15px;overflow:hidden;box-shadow:0 5px 20px #0001}
+.cover{height:210px;background:#e5ece6;display:grid;place-items:center;color:#617067}
+.cover img,.cover video{width:100%;height:100%;object-fit:cover}
+.card-body{padding:18px}
+.card h3{margin-top:0;color:var(--green)}
+.price{font-weight:bold;font-size:1.15rem;color:var(--green2)}
+.meta{font-size:.93rem;color:#52685b}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.btn-dark{background:var(--green);color:white}
+.empty{background:white;padding:20px;border-radius:12px;text-align:center;grid-column:1/-1}
+#destinations{background:#e8eee5}
+#contact{background:var(--green);color:white;text-align:center}
+#contact h2{color:white}
+footer{background:#10392c;color:white;text-align:center;padding:22px}
+.modal{display:none;position:fixed;inset:0;z-index:10;overflow:auto;background:#0009;padding:15px}
+.modal.open{display:block}
+.modal-box{max-width:800px;margin:20px auto;background:var(--cream);border-radius:15px;overflow:hidden}
+.modal-head{background:var(--green);color:white;padding:15px 20px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.modal-head h2{margin:0;color:white}
+.close{background:white;color:var(--green);border:0;border-radius:50%;width:36px;height:36px;font-size:22px;cursor:pointer}
+.modal-content{padding:20px}
+.gallery{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:18px}
+.gallery img,.gallery video{width:100%;height:150px;object-fit:cover;border-radius:10px;background:#ddd}
+.detail-block{background:white;border-radius:10px;padding:15px;margin:12px 0}
+.detail-block h3{color:var(--green);margin-top:0}
+.detail-text{white-space:pre-wrap;overflow-wrap:anywhere}
+@media(max-width:600px){.hero{padding:50px 6%}section{padding:35px 5%}.modal{padding:5px}}
 </style>
 </head>
-
 <body>
+
 <header>
-  <strong>🌿 GILTOUR — ADMIN</strong>
-  <a href="index.html">Lihat Website</a>
+  <div class="brand">🌿 GILTOUR</div>
+  <nav>
+    <a href="#packages-section">Paket Wisata</a>
+    <a href="#destinations">Destinasi</a>
+    <a href="#contact">Kontak</a>
+  </nav>
 </header>
 
-<main class="wrap">
-  <div id="status" class="status">
-    Silakan masuk menggunakan akun admin.
+<main>
+  <div class="hero">
+    <div class="wrap">
+      <div class="eyebrow">JELAJAHI INDONESIA</div>
+      <h1>Perjalanan indah dimulai bersama Giltour.</h1>
+      <p>Temukan paket wisata menarik, lihat detail perjalanan, dan ciptakan kenangan indah bersama kami.</p>
+      <a class="btn" href="https://wa.me/6285210283298?text=Halo%20Giltour%2C%20saya%20ingin%20bertanya%20tentang%20paket%20wisata" target="_blank" rel="noopener">Konsultasi via WhatsApp</a>
+    </div>
   </div>
 
-  <section id="loginPanel" class="panel">
-    <h1>Masuk Admin</h1>
-    <form id="loginForm">
-      <label for="email">Email admin</label>
-      <input id="email" type="email"
-        value="admin@giltour.com" required autocomplete="username">
-
-      <label for="password">Password</label>
-      <input id="password" type="password"
-        required autocomplete="current-password">
-
-      <button class="btn" type="submit">Masuk</button>
-    </form>
+  <section id="packages-section">
+    <div class="wrap">
+      <div class="section-title">
+        <h2>Paket Wisata</h2>
+        <p>Pilih paket dan lihat rincian perjalananmu.</p>
+      </div>
+      <input id="search" class="search" type="search" placeholder="Cari paket atau destinasi...">
+      <div id="packages" class="grid">
+        <div class="empty">Memuat paket wisata...</div>
+      </div>
+    </div>
   </section>
 
-  <div id="dashboard" class="hidden">
-    <section class="panel">
-      <h2>Tambah Paket Wisata / Destinasi</h2>
+  <section id="destinations">
+    <div class="wrap">
+      <div class="section-title">
+        <h2>Destinasi Pilihan</h2>
+        <p>Temukan tempat untuk perjalanan berikutnya.</p>
+      </div>
+      <div id="destination-list" class="grid">
+        <div class="empty">Memuat destinasi...</div>
+      </div>
+    </div>
+  </section>
 
-      <form id="postForm">
-        <label for="title">Nama paket atau destinasi *</label>
-        <input id="title" required maxlength="120"
-          placeholder="Contoh: Paket Wisata Bali 3 Hari 2 Malam">
-
-        <label for="category">Kategori *</label>
-        <select id="category">
-          <option value="layanan">Paket Wisata</option>
-          <option value="destinasi">Destinasi</option>
-        </select>
-
-        <label for="price">Harga dalam Rupiah</label>
-        <input id="price" type="number" min="0" step="1000"
-          placeholder="Contoh: 1500000">
-
-        <label for="duration">Durasi perjalanan</label>
-        <input id="duration" maxlength="100"
-          placeholder="Contoh: 3 Hari 2 Malam">
-
-        <label for="schedule">Jadwal perjalanan</label>
-        <input id="schedule" maxlength="200"
-          placeholder="Contoh: Setiap hari, sesuai ketersediaan">
-
-        <label for="description">Deskripsi paket</label>
-        <textarea id="description"
-          placeholder="Ceritakan keunggulan dan fasilitas paket."></textarea>
-
-        <label for="itinerary">Itinerary / Jadwal kegiatan</label>
-        <textarea id="itinerary"
-          placeholder="Hari 1: Penjemputan dan check-in&#10;Hari 2: Tur destinasi wisata&#10;Hari 3: Sarapan dan perjalanan pulang"></textarea>
-
-        <label for="media">Foto atau video</label>
-        <input id="media" type="file" multiple
-          accept="image/jpeg,image/png,image/webp,image/gif,video/mp4,video/webm,video/quicktime">
-
-        <p class="hint">
-          Kamu dapat memilih beberapa foto/video sekaligus.
-          Batas kode ini 50 MB per file. Batas sebenarnya juga mengikuti
-          pengaturan Storage Supabase.
-        </p>
-
-        <button class="btn" id="saveBtn" type="submit">
-          Simpan Paket
-        </button>
-      </form>
-    </section>
-
-    <section class="panel">
-      <h2>Konten Tersimpan</h2>
-      <div id="postsList">Memuat konten...</div>
-
-      <button class="btn secondary" id="refreshBtn" type="button">
-        Muat Ulang
-      </button>
-
-      <button class="btn secondary" id="logoutBtn" type="button">
-        Keluar
-      </button>
-    </section>
-  </div>
+  <section id="contact">
+    <div class="wrap">
+      <h2>Siap Merencanakan Perjalanan?</h2>
+      <p>Hubungi Giltour untuk informasi harga dan ketersediaan paket.</p>
+      <a class="btn" href="https://wa.me/6285210283298" target="_blank" rel="noopener">WhatsApp: 0852-1028-3298</a>
+      <p>Email: <a style="color:white" href="mailto:giltourt@gmail.com">giltourt@gmail.com</a></p>
+    </div>
+  </section>
 </main>
+
+<footer>© <span id="year"></span> Giltour. Perjalananmu, cerita indahmu.</footer>
+
+<div id="detailModal" class="modal" role="dialog" aria-modal="true">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h2 id="detailTitle">Detail Paket</h2>
+      <button class="close" id="closeModal" aria-label="Tutup">×</button>
+    </div>
+    <div id="detailContent" class="modal-content"></div>
+  </div>
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const SUPABASE_URL = 'https://vjnskgstmpdetjmdkysj.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_53HdyGZjaWBHH84-0lqtDg_cj6EBb3G';
 
-const db = window.supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_ANON_KEY
-);
+const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+document.getElementById('year').textContent = new Date().getFullYear();
 
-const ADMIN_EMAIL = 'admin@giltour.com';
-const BUCKET = 'giltour-media';
-
-let currentUser = null;
-
-const $ = id => document.getElementById(id);
-
-function setStatus(message) {
-  $('status').textContent = message;
-}
+let allPosts = [];
 
 function esc(value = '') {
-  return String(value).replace(/[&<>"']/g, ch => ({
-    '&': '&amp;',
-    '<': '&lt;',
-    '>': '&gt;',
-    '"': '&quot;',
-    "'": '&#39;'
-  }[ch]));
+  return String(value).replace(/[&<>"']/g, c => ({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+  }[c]));
 }
 
-function showDashboard(user) {
-  currentUser = user;
+function money(value) {
+  return 'Rp ' + Number(value).toLocaleString('id-ID');
+}
 
-  $('loginPanel').classList.toggle('hidden', !!user);
-  $('dashboard').classList.toggle('hidden', !user);
-
-  if (user) {
-    setStatus('Masuk sebagai ' + user.email);
-    loadPosts();
-  } else {
-    setStatus('Silakan masuk menggunakan akun admin.');
+function mediaHTML(item) {
+  if (!item || !item.url) return '';
+  const url = esc(item.url);
+  if ((item.type || '').startsWith('video/')) {
+    return `<video src="${url}" controls playsinline preload="metadata"></video>`;
   }
+  return `<img src="${url}" alt="${esc(item.name || 'Foto wisata')}" loading="lazy">`;
 }
 
-async function verifyAdmin(user) {
-  if (!user || (user.email || '').toLowerCase() !== ADMIN_EMAIL) {
-    await db.auth.signOut();
-    showDashboard(null);
-    setStatus('Akses ditolak. Gunakan akun ' + ADMIN_EMAIL);
-    return false;
-  }
-  return true;
+function makeCard(post) {
+  const media = Array.isArray(post.media) ? post.media : [];
+  const first = media.find(item => item.url);
+  const cover = first
+    ? mediaHTML(first)
+    : '<div class="cover">Foto belum tersedia</div>';
+
+  return `
+    <article class="card">
+      <div class="cover">${cover}</div>
+      <div class="card-body">
+        <h3>${esc(post.title)}</h3>
+        <div class="price">${
+          post.price !== null && post.price !== ''
+            ? 'Mulai ' + money(post.price)
+            : 'Hubungi kami untuk harga'
+        }</div>
+        ${post.duration ? `<p class="meta">⏱ Durasi: ${esc(post.duration)}</p>` : ''}
+        ${post.schedule ? `<p class="meta">📅 Jadwal: ${esc(post.schedule)}</p>` : ''}
+        <p>${esc(post.description || '')}</p>
+        <div class="actions">
+          <button class="btn btn-dark" data-detail="${esc(post.id)}">Lihat Detail</button>
+          <a class="btn" href="https://wa.me/6285210283298?text=${encodeURIComponent('Halo Giltour, saya tertarik dengan paket ' + post.title + '. Mohon informasi lebih lanjut.')}" target="_blank" rel="noopener">Pesan</a>
+        </div>
+      </div>
+    </article>
+  `;
 }
 
-$('loginForm').addEventListener('submit', async event => {
-  event.preventDefault();
-  setStatus('Sedang masuk...');
+function showDetails(id) {
+  const post = allPosts.find(p => String(p.id) === String(id));
+  if (!post) return;
 
-  const { data, error } = await db.auth.signInWithPassword({
-    email: $('email').value.trim(),
-    password: $('password').value
+  const media = Array.isArray(post.media) ? post.media : [];
+  const validMedia = media.filter(item => item.url);
+  const gallery = validMedia.length
+    ? `<div class="gallery">${validMedia.map(mediaHTML).join('')}</div>`
+    : '<p>Belum ada foto atau video untuk paket ini.</p>';
+
+  const price = post.price !== null && post.price !== ''
+    ? money(post.price)
+    : 'Hubungi admin untuk harga';
+
+  const message = encodeURIComponent(
+    'Halo Giltour, saya ingin bertanya atau memesan paket "' +
+    post.title + '". Mohon informasi harga dan ketersediaan.'
+  );
+
+  document.getElementById('detailTitle').textContent = post.title;
+  document.getElementById('detailContent').innerHTML = `
+    ${gallery}
+    <div class="detail-block">
+      <h3>${esc(post.title)}</h3>
+      <div class="price">${esc(price)}</div>
+      <p class="meta">⏱ Durasi: ${esc(post.duration || 'Belum ditentukan')}</p>
+      <p class="meta">📅 Jadwal: ${esc(post.schedule || 'Hubungi admin')}</p>
+      <div class="detail-text">${esc(post.description || 'Belum ada deskripsi.')}</div>
+    </div>
+    <div class="detail-block">
+      <h3>Itinerary Perjalanan</h3>
+      <div class="detail-text">${esc(post.itinerary || 'Itinerary belum ditambahkan. Silakan hubungi kami.')}</div>
+    </div>
+    <a class="btn" href="https://wa.me/6285210283298?text=${message}" target="_blank" rel="noopener">Tanya / Pesan via WhatsApp</a>
+  `;
+
+  document.getElementById('detailModal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeDetails() {
+  document.getElementById('detailModal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+document.getElementById('closeModal').addEventListener('click', closeDetails);
+document.getElementById('detailModal').addEventListener('click', event => {
+  if (event.target.id === 'detailModal') closeDetails();
+});
+document.addEventListener('keydown', event => {
+  if (event.key === 'Escape') closeDetails();
+});
+
+function renderPosts() {
+  const query = document.getElementById('search').value.trim().toLowerCase();
+  const matches = allPosts.filter(p =>
+    [p.title, p.description, p.duration, p.schedule, p.itinerary]
+      .join(' ').toLowerCase().includes(query)
+  );
+
+  const packages = matches.filter(p => p.category === 'layanan');
+  const destinations = matches.filter(p => p.category === 'destinasi');
+
+  document.getElementById('packages').innerHTML = packages.length
+    ? packages.map(makeCard).join('')
+    : '<div class="empty">Belum ada paket yang cocok dengan pencarian.</div>';
+
+  document.getElementById('destination-list').innerHTML = destinations.length
+    ? destinations.map(makeCard).join('')
+    : '<div class="empty">Belum ada destinasi yang cocok.</div>';
+
+  document.querySelectorAll('[data-detail]').forEach(button => {
+    button.addEventListener('click', () => showDetails(button.dataset.detail));
   });
+}
 
-  if (error) {
-    setStatus('Gagal masuk: ' + error.message);
-    return;
-  }
-
-  if (await verifyAdmin(data.user)) {
-    showDashboard(data.user);
-  }
-});
-
-db.auth.onAuthStateChange((_event, session) => {
-  if (session?.user &&
-      session.user.email.toLowerCase() === ADMIN_EMAIL) {
-    showDashboard(session.user);
-  } else if (!session) {
-    showDashboard(null);
-  }
-});
-
-(async function init() {
-  const { data } = await db.auth.getSession();
-
-  if (data.session &&
-      await verifyAdmin(data.session.user)) {
-    showDashboard(data.session.user);
-  }
-})();
+document.getElementById('search').addEventListener('input', renderPosts);
 
 async function loadPosts() {
-  if (!currentUser) return;
-
-  $('postsList').textContent = 'Memuat konten...';
-
   const { data, error } = await db
     .from('posts')
     .select('*')
     .order('timestamp', { ascending: false });
 
   if (error) {
-    $('postsList').textContent = 'Gagal memuat: ' + error.message;
+    console.error(error);
+    document.getElementById('packages').innerHTML =
+      '<div class="empty">Paket belum bisa dimuat. Pastikan pengaturan Supabase sudah benar.</div>';
+    document.getElementById('destination-list').innerHTML =
+      '<div class="empty">Destinasi belum bisa dimuat.</div>';
     return;
   }
 
-  if (!data || !data.length) {
-    $('postsList').textContent = 'Belum ada konten.';
-    return;
-  }
-
-  $('postsList').innerHTML = data.map(post => `
-    <div class="item">
-      <strong>${esc(post.title)}</strong>
-      <p class="small">
-        ${post.category === 'destinasi' ? 'Destinasi' : 'Paket Wisata'}
-      </p>
-      <p><strong>Harga:</strong>
-        ${post.price != null
-          ? 'Rp ' + Number(post.price).toLocaleString('id-ID')
-          : 'Belum ditentukan'}
-      </p>
-      <p><strong>Durasi:</strong> ${esc(post.duration || '-')}</p>
-      <p><strong>Jadwal:</strong> ${esc(post.schedule || '-')}</p>
-      <button class="btn danger" type="button"
-        data-delete="${esc(post.id)}">Hapus</button>
-    </div>
-  `).join('');
-
-  $('postsList').querySelectorAll('[data-delete]').forEach(button => {
-    button.addEventListener('click', () => {
-      deletePost(button.dataset.delete);
-    });
-  });
+  allPosts = data || [];
+  renderPosts();
 }
 
-$('postForm').addEventListener('submit', async event => {
-  event.preventDefault();
-
-  if (!currentUser ||
-      currentUser.email.toLowerCase() !== ADMIN_EMAIL) {
-    setStatus('Silakan masuk sebagai admin terlebih dahulu.');
-    return;
-  }
-
-  const files = Array.from($('media').files || []);
-
-  for (const file of files) {
-    if (file.size > 50 * 1024 * 1024) {
-      setStatus('File ' + file.name + ' melebihi batas 50 MB.');
-      return;
-    }
-  }
-
-  $('saveBtn').disabled = true;
-  const uploadedMedia = [];
-
-  try {
-    setStatus('Sedang mengunggah file dan menyimpan paket...');
-
-    for (const file of files) {
-      const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
-
-      const path =
-        `${currentUser.id}/${Date.now()}-${crypto.randomUUID()}-${safeName}`;
-
-      const { error: uploadError } = await db.storage
-        .from(BUCKET)
-        .upload(path, file, {
-          upsert: false,
-          contentType: file.type
-        });
-
-      if (uploadError) {
-        throw new Error('Upload gagal: ' + uploadError.message);
-      }
-
-      const { data: publicData } = db.storage
-        .from(BUCKET)
-        .getPublicUrl(path);
-
-      uploadedMedia.push({
-        path: path,
-        url: publicData.publicUrl,
-        type: file.type,
-        name: file.name
-      });
-    }
-
-    const priceText = $('price').value.trim();
-
-    const record = {
-      title: $('title').value.trim(),
-      category: $('category').value,
-      price: priceText ? Number(priceText) : null,
-      duration: $('duration').value.trim(),
-      schedule: $('schedule').value.trim(),
-      description: $('description').value.trim(),
-      itinerary: $('itinerary').value.trim(),
-      media: uploadedMedia
-    };
-
-    const { error: insertError } = await db
-      .from('posts')
-      .insert(record);
-
-    if (insertError) {
-      for (const item of uploadedMedia) {
-        await db.storage.from(BUCKET).remove([item.path]);
-      }
-      throw new Error('Gagal menyimpan: ' + insertError.message);
-    }
-
-    $('postForm').reset();
-    setStatus('Paket berhasil disimpan dan ditampilkan di website.');
-    await loadPosts();
-
-  } catch (error) {
-    setStatus(error.message || String(error));
-  } finally {
-    $('saveBtn').disabled = false;
-  }
-});
-
-async function deletePost(id) {
-  if (!confirm('Yakin ingin menghapus konten ini?')) return;
-
-  setStatus('Sedang menghapus konten...');
-
-  const { data: post, error: readError } = await db
-    .from('posts')
-    .select('media')
-    .eq('id', id)
-    .single();
-
-  if (readError) {
-    setStatus('Gagal membaca konten: ' + readError.message);
-    return;
-  }
-
-  const { error } = await db
-    .from('posts')
-    .delete()
-    .eq('id', id);
-
-  if (error) {
-    setStatus('Gagal menghapus: ' + error.message);
-    return;
-  }
-
-  const paths = (Array.isArray(post.media) ? post.media : [])
-    .map(item => item.path)
-    .filter(Boolean);
-
-  if (paths.length) {
-    const { error: storageError } = await db.storage
-      .from(BUCKET)
-      .remove(paths);
-
-    setStatus(
-      storageError
-        ? 'Konten terhapus, tetapi file Storage perlu diperiksa: ' + storageError.message
-        : 'Konten dan file berhasil dihapus.'
-    );
-  } else {
-    setStatus('Konten berhasil dihapus.');
-  }
-
-  await loadPosts();
-}
-
-$('refreshBtn').addEventListener('click', loadPosts);
-
-$('logoutBtn').addEventListener('click', async () => {
-  await db.auth.signOut();
-  showDashboard(null);
-});
+loadPosts();
 </script>
 </body>
 </html>
