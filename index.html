@@ -1,0 +1,451 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Admin Giltour</title>
+
+<style>
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f7f3e9;
+  color: #19352c;
+  line-height: 1.5;
+}
+header {
+  background: #174c3c;
+  color: white;
+  padding: 18px 5%;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+header a { color: white; }
+.wrap { max-width: 900px; margin: 25px auto; padding: 0 14px; }
+.panel {
+  background: white;
+  padding: 22px;
+  border-radius: 14px;
+  margin-bottom: 18px;
+  box-shadow: 0 5px 20px #0001;
+}
+h1, h2 { color: #174c3c; }
+label { display: block; font-weight: bold; margin-top: 13px; }
+input, select, textarea {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #cbd5ce;
+  border-radius: 8px;
+  font: inherit;
+  margin-top: 5px;
+}
+textarea { min-height: 90px; resize: vertical; }
+.btn {
+  padding: 11px 17px;
+  border: 0;
+  border-radius: 22px;
+  background: #174c3c;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 15px;
+}
+.danger { background: #a83c35; }
+.secondary { background: #64756a; }
+.status {
+  background: #edf2ed;
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 15px;
+  overflow-wrap: anywhere;
+}
+.hidden { display: none; }
+.item {
+  border: 1px solid #dce3dc;
+  padding: 14px;
+  border-radius: 10px;
+  margin: 12px 0;
+}
+.small { color: #617067; font-size: .9rem; }
+.hint { color: #617067; font-size: .9rem; }
+button:disabled { opacity: .6; cursor: wait; }
+</style>
+</head>
+
+<body>
+<header>
+  <strong>🌿 GILTOUR — ADMIN</strong>
+  <a href="index.html">Lihat Website</a>
+</header>
+
+<main class="wrap">
+  <div id="status" class="status">
+    Silakan masuk menggunakan akun admin.
+  </div>
+
+  <section id="loginPanel" class="panel">
+    <h1>Masuk Admin</h1>
+    <form id="loginForm">
+      <label for="email">Email admin</label>
+      <input id="email" type="email"
+        value="admin@giltour.com" required autocomplete="username">
+
+      <label for="password">Password</label>
+      <input id="password" type="password"
+        required autocomplete="current-password">
+
+      <button class="btn" type="submit">Masuk</button>
+    </form>
+  </section>
+
+  <div id="dashboard" class="hidden">
+    <section class="panel">
+      <h2>Tambah Paket Wisata / Destinasi</h2>
+
+      <form id="postForm">
+        <label for="title">Nama paket atau destinasi *</label>
+        <input id="title" required maxlength="120"
+          placeholder="Contoh: Paket Wisata Bali 3 Hari 2 Malam">
+
+        <label for="category">Kategori *</label>
+        <select id="category">
+          <option value="layanan">Paket Wisata</option>
+          <option value="destinasi">Destinasi</option>
+        </select>
+
+        <label for="price">Harga dalam Rupiah</label>
+        <input id="price" type="number" min="0" step="1000"
+          placeholder="Contoh: 1500000">
+
+        <label for="duration">Durasi perjalanan</label>
+        <input id="duration" maxlength="100"
+          placeholder="Contoh: 3 Hari 2 Malam">
+
+        <label for="schedule">Jadwal perjalanan</label>
+        <input id="schedule" maxlength="200"
+          placeholder="Contoh: Setiap hari, sesuai ketersediaan">
+
+        <label for="description">Deskripsi paket</label>
+        <textarea id="description"
+          placeholder="Ceritakan keunggulan dan fasilitas paket."></textarea>
+
+        <label for="itinerary">Itinerary / Jadwal kegiatan</label>
+        <textarea id="itinerary"
+          placeholder="Hari 1: Penjemputan dan check-in&#10;Hari 2: Tur destinasi wisata&#10;Hari 3: Sarapan dan perjalanan pulang"></textarea>
+
+        <label for="media">Foto atau video</label>
+        <input id="media" type="file" multiple
+          accept="image/jpeg,image/png,image/webp,image/gif,video/mp4,video/webm,video/quicktime">
+
+        <p class="hint">
+          Kamu dapat memilih beberapa foto/video sekaligus.
+          Batas kode ini 50 MB per file. Batas sebenarnya juga mengikuti
+          pengaturan Storage Supabase.
+        </p>
+
+        <button class="btn" id="saveBtn" type="submit">
+          Simpan Paket
+        </button>
+      </form>
+    </section>
+
+    <section class="panel">
+      <h2>Konten Tersimpan</h2>
+      <div id="postsList">Memuat konten...</div>
+
+      <button class="btn secondary" id="refreshBtn" type="button">
+        Muat Ulang
+      </button>
+
+      <button class="btn secondary" id="logoutBtn" type="button">
+        Keluar
+      </button>
+    </section>
+  </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = 'https://vjnskgstmpdetjmdkysj.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_53HdyGZjaWBHH84-0lqtDg_cj6EBb3G';
+
+const db = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_ANON_KEY
+);
+
+const ADMIN_EMAIL = 'admin@giltour.com';
+const BUCKET = 'giltour-media';
+
+let currentUser = null;
+
+const $ = id => document.getElementById(id);
+
+function setStatus(message) {
+  $('status').textContent = message;
+}
+
+function esc(value = '') {
+  return String(value).replace(/[&<>"']/g, ch => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;'
+  }[ch]));
+}
+
+function showDashboard(user) {
+  currentUser = user;
+
+  $('loginPanel').classList.toggle('hidden', !!user);
+  $('dashboard').classList.toggle('hidden', !user);
+
+  if (user) {
+    setStatus('Masuk sebagai ' + user.email);
+    loadPosts();
+  } else {
+    setStatus('Silakan masuk menggunakan akun admin.');
+  }
+}
+
+async function verifyAdmin(user) {
+  if (!user || (user.email || '').toLowerCase() !== ADMIN_EMAIL) {
+    await db.auth.signOut();
+    showDashboard(null);
+    setStatus('Akses ditolak. Gunakan akun ' + ADMIN_EMAIL);
+    return false;
+  }
+  return true;
+}
+
+$('loginForm').addEventListener('submit', async event => {
+  event.preventDefault();
+  setStatus('Sedang masuk...');
+
+  const { data, error } = await db.auth.signInWithPassword({
+    email: $('email').value.trim(),
+    password: $('password').value
+  });
+
+  if (error) {
+    setStatus('Gagal masuk: ' + error.message);
+    return;
+  }
+
+  if (await verifyAdmin(data.user)) {
+    showDashboard(data.user);
+  }
+});
+
+db.auth.onAuthStateChange((_event, session) => {
+  if (session?.user &&
+      session.user.email.toLowerCase() === ADMIN_EMAIL) {
+    showDashboard(session.user);
+  } else if (!session) {
+    showDashboard(null);
+  }
+});
+
+(async function init() {
+  const { data } = await db.auth.getSession();
+
+  if (data.session &&
+      await verifyAdmin(data.session.user)) {
+    showDashboard(data.session.user);
+  }
+})();
+
+async function loadPosts() {
+  if (!currentUser) return;
+
+  $('postsList').textContent = 'Memuat konten...';
+
+  const { data, error } = await db
+    .from('posts')
+    .select('*')
+    .order('timestamp', { ascending: false });
+
+  if (error) {
+    $('postsList').textContent = 'Gagal memuat: ' + error.message;
+    return;
+  }
+
+  if (!data || !data.length) {
+    $('postsList').textContent = 'Belum ada konten.';
+    return;
+  }
+
+  $('postsList').innerHTML = data.map(post => `
+    <div class="item">
+      <strong>${esc(post.title)}</strong>
+      <p class="small">
+        ${post.category === 'destinasi' ? 'Destinasi' : 'Paket Wisata'}
+      </p>
+      <p><strong>Harga:</strong>
+        ${post.price != null
+          ? 'Rp ' + Number(post.price).toLocaleString('id-ID')
+          : 'Belum ditentukan'}
+      </p>
+      <p><strong>Durasi:</strong> ${esc(post.duration || '-')}</p>
+      <p><strong>Jadwal:</strong> ${esc(post.schedule || '-')}</p>
+      <button class="btn danger" type="button"
+        data-delete="${esc(post.id)}">Hapus</button>
+    </div>
+  `).join('');
+
+  $('postsList').querySelectorAll('[data-delete]').forEach(button => {
+    button.addEventListener('click', () => {
+      deletePost(button.dataset.delete);
+    });
+  });
+}
+
+$('postForm').addEventListener('submit', async event => {
+  event.preventDefault();
+
+  if (!currentUser ||
+      currentUser.email.toLowerCase() !== ADMIN_EMAIL) {
+    setStatus('Silakan masuk sebagai admin terlebih dahulu.');
+    return;
+  }
+
+  const files = Array.from($('media').files || []);
+
+  for (const file of files) {
+    if (file.size > 50 * 1024 * 1024) {
+      setStatus('File ' + file.name + ' melebihi batas 50 MB.');
+      return;
+    }
+  }
+
+  $('saveBtn').disabled = true;
+  const uploadedMedia = [];
+
+  try {
+    setStatus('Sedang mengunggah file dan menyimpan paket...');
+
+    for (const file of files) {
+      const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+
+      const path =
+        `${currentUser.id}/${Date.now()}-${crypto.randomUUID()}-${safeName}`;
+
+      const { error: uploadError } = await db.storage
+        .from(BUCKET)
+        .upload(path, file, {
+          upsert: false,
+          contentType: file.type
+        });
+
+      if (uploadError) {
+        throw new Error('Upload gagal: ' + uploadError.message);
+      }
+
+      const { data: publicData } = db.storage
+        .from(BUCKET)
+        .getPublicUrl(path);
+
+      uploadedMedia.push({
+        path: path,
+        url: publicData.publicUrl,
+        type: file.type,
+        name: file.name
+      });
+    }
+
+    const priceText = $('price').value.trim();
+
+    const record = {
+      title: $('title').value.trim(),
+      category: $('category').value,
+      price: priceText ? Number(priceText) : null,
+      duration: $('duration').value.trim(),
+      schedule: $('schedule').value.trim(),
+      description: $('description').value.trim(),
+      itinerary: $('itinerary').value.trim(),
+      media: uploadedMedia
+    };
+
+    const { error: insertError } = await db
+      .from('posts')
+      .insert(record);
+
+    if (insertError) {
+      for (const item of uploadedMedia) {
+        await db.storage.from(BUCKET).remove([item.path]);
+      }
+      throw new Error('Gagal menyimpan: ' + insertError.message);
+    }
+
+    $('postForm').reset();
+    setStatus('Paket berhasil disimpan dan ditampilkan di website.');
+    await loadPosts();
+
+  } catch (error) {
+    setStatus(error.message || String(error));
+  } finally {
+    $('saveBtn').disabled = false;
+  }
+});
+
+async function deletePost(id) {
+  if (!confirm('Yakin ingin menghapus konten ini?')) return;
+
+  setStatus('Sedang menghapus konten...');
+
+  const { data: post, error: readError } = await db
+    .from('posts')
+    .select('media')
+    .eq('id', id)
+    .single();
+
+  if (readError) {
+    setStatus('Gagal membaca konten: ' + readError.message);
+    return;
+  }
+
+  const { error } = await db
+    .from('posts')
+    .delete()
+    .eq('id', id);
+
+  if (error) {
+    setStatus('Gagal menghapus: ' + error.message);
+    return;
+  }
+
+  const paths = (Array.isArray(post.media) ? post.media : [])
+    .map(item => item.path)
+    .filter(Boolean);
+
+  if (paths.length) {
+    const { error: storageError } = await db.storage
+      .from(BUCKET)
+      .remove(paths);
+
+    setStatus(
+      storageError
+        ? 'Konten terhapus, tetapi file Storage perlu diperiksa: ' + storageError.message
+        : 'Konten dan file berhasil dihapus.'
+    );
+  } else {
+    setStatus('Konten berhasil dihapus.');
+  }
+
+  await loadPosts();
+}
+
+$('refreshBtn').addEventListener('click', loadPosts);
+
+$('logoutBtn').addEventListener('click', async () => {
+  await db.auth.signOut();
+  showDashboard(null);
+});
+</script>
+</body>
+</html>
